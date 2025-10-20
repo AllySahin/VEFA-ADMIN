@@ -17,9 +17,35 @@ interface Comment {
 }
 
 export default function CommentsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState('all')
+  // ...
 
+  // Yıldız render fonksiyonu
+  function renderStars(rating: number) {
+    return (
+      <span style={{ display: 'flex', gap: '2px', color: '#ffc107' }}>
+        {[1, 2, 3, 4, 5].map(star => (
+          <span key={star}>{star <= rating ? '★' : '☆'}</span>
+        ))}
+      </span>
+    );
+  }
+
+  // Yayınla/yayından kaldır
+  function togglePublish(id: number) {
+    setComments(prev => prev.map(c => c.id === id ? { ...c, isPublished: !c.isPublished } : c));
+  }
+
+  // Öne çıkar/çıkar kaldır
+  function toggleStar(id: number) {
+    setComments(prev => prev.map(c => c.id === id ? { ...c, isStarred: !c.isStarred } : c));
+  }
+
+  // Sil
+  function deleteComment(id: number) {
+    setComments(prev => prev.filter(c => c.id !== id));
+  }
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const [comments, setComments] = useState<Comment[]>([
     { 
       id: 1, 
@@ -35,88 +61,28 @@ export default function CommentsPage() {
     { 
       id: 2, 
       author: 'Fatma Demir', 
-      email: 'fatma@example.com', 
-      course: 'Mobil Vinç', 
-      rating: 5, 
-      comment: 'Çok memnun kaldım. Pratik eğitim imkanı harika. Sertifikamı da zamanında aldım.', 
-      date: '2025-10-11 16:45', 
-      isPublished: true, 
-      isStarred: true 
-    },
-    { 
-      id: 3, 
-      author: 'Mehmet Kaya', 
-      email: 'mehmet@example.com', 
-      course: 'Ekskavatör', 
-      rating: 4, 
-      comment: 'Genel olarak iyiydi. Eğitim süresi biraz daha uzun olabilirdi.', 
-      date: '2025-10-10 09:20', 
-      isPublished: false, 
-      isStarred: false 
-    },
-    { 
-      id: 4, 
-      author: 'Ayşe Yıldız', 
-      email: 'ayse@example.com', 
-      course: 'Forklift Operatörlüğü', 
-      rating: 5, 
-      comment: 'Mükemmel bir eğitim merkezi. Personel çok ilgili ve yardımcı. Teşekkürler!', 
-      date: '2025-10-09 13:00', 
-      isPublished: true, 
-      isStarred: true 
-    },
-    { 
-      id: 5, 
-      author: 'Ali Öztürk', 
-      email: 'ali@example.com', 
-      course: 'Manlift', 
-      rating: 3, 
-      comment: 'Fena değildi ama beklentimin altındaydı. Pratik eğitim daha fazla olabilirdi.', 
-      date: '2025-10-08 11:15', 
-      isPublished: false, 
-      isStarred: false 
-    },
-  ])
-
-  const togglePublish = (id: number) => {
-    setComments(comments.map(comment => 
-      comment.id === id ? { ...comment, isPublished: !comment.isPublished } : comment
-    ))
-  }
-
-  const toggleStar = (id: number) => {
-    setComments(comments.map(comment => 
-      comment.id === id ? { ...comment, isStarred: !comment.isStarred } : comment
-    ))
-  }
-
-  const deleteComment = (id: number) => {
-    if (confirm('Bu yorumu silmek istediğinizden emin misiniz?')) {
-      setComments(comments.filter(comment => comment.id !== id))
+      email: 'fatma@example.com',
+      course: 'Vinc Operatörlüğü',
+      rating: 4,
+      comment: 'Eğitim içeriği çok faydalıydı. Saha uygulamaları özellikle güzeldi.',
+      date: '2025-10-10 09:15',
+      isPublished: false,
+      isStarred: true
     }
-  }
+  ]);
 
+  // Yorumları filtrele
   const filteredComments = comments.filter(comment => {
-    const matchesSearch = comment.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          comment.comment.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          comment.course.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesStatus = filterStatus === 'all' || 
-                          (filterStatus === 'published' && comment.isPublished) ||
-                          (filterStatus === 'unpublished' && !comment.isPublished)
-    
-    return matchesSearch && matchesStatus
-  })
-
-  const renderStars = (rating: number) => {
-    return (
-      <div style={{ display: 'flex', gap: '2px', color: '#ffc107' }}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <span key={star}>{star <= rating ? '★' : '☆'}</span>
-        ))}
-      </div>
-    )
-  }
+    if (filterStatus === 'published' && !comment.isPublished) return false;
+    if (filterStatus === 'unpublished' && comment.isPublished) return false;
+    if (searchTerm && !(
+      comment.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      comment.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      comment.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      comment.comment.toLowerCase().includes(searchTerm.toLowerCase())
+    )) return false;
+    return true;
+  });
 
   return (
     <AdminLayout>
@@ -194,41 +160,42 @@ export default function CommentsPage() {
       </div>
 
       {/* Comments List */}
-      <div className="row">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+        gap: '2rem',
+        marginBottom: '2rem'
+      }}>
         {filteredComments.map((comment) => (
-          <div key={comment.id} className="col-md-12 mb-3">
-            <div className="card">
-              <div className="card-body">
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                      <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 600 }}>
-                        {comment.author}
-                      </h3>
-                      {renderStars(comment.rating)}
-                      {comment.isStarred && (
-                        <span style={{ color: '#ffc107' }}>
-                          <FiStar size={18} fill="#ffc107" />
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ fontSize: '0.875rem', color: '#6c757d', marginBottom: '0.5rem' }}>
-                      {comment.email} • {comment.course} • {comment.date}
-                    </div>
-                    <div style={{ 
-                      background: '#f8f9fa', 
-                      padding: '1rem', 
-                      borderRadius: '6px',
-                      marginBottom: '1rem'
-                    }}>
-                      <p style={{ margin: 0, lineHeight: 1.6 }}>
-                        {comment.comment}
-                      </p>
-                    </div>
-                  </div>
+          <div key={comment.id}>
+            <div className="card" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div className="card-body" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 600 }}>
+                    {comment.author}
+                  </h3>
+                  {renderStars(comment.rating)}
+                  {comment.isStarred && (
+                    <span style={{ color: '#ffc107' }}>
+                      <FiStar size={18} fill="#ffc107" />
+                    </span>
+                  )}
                 </div>
-
-                <div className="d-flex gap-2">
+                <div style={{ fontSize: '0.875rem', color: '#6c757d', marginBottom: '0.5rem' }}>
+                  {comment.email} • {comment.course} • {comment.date}
+                </div>
+                <div style={{ 
+                  background: '#f8f9fa', 
+                  padding: '1rem', 
+                  borderRadius: '6px',
+                  marginBottom: '1rem',
+                  minHeight: '70px'
+                }}>
+                  <p style={{ margin: 0, lineHeight: 1.6 }}>
+                    {comment.comment}
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: 'auto' }}>
                   <button 
                     className={`btn btn-sm ${comment.isPublished ? 'btn-success' : 'btn-secondary'}`}
                     onClick={() => togglePublish(comment.id)}
@@ -239,14 +206,12 @@ export default function CommentsPage() {
                       <><FiEyeOff /> Yayınla</>
                     )}
                   </button>
-                  
                   <button 
                     className={`btn btn-sm ${comment.isStarred ? 'btn-warning' : 'btn-secondary'}`}
                     onClick={() => toggleStar(comment.id)}
                   >
                     <FiStar /> {comment.isStarred ? 'Öne Çıkan' : 'Öne Çıkar'}
                   </button>
-
                   <button 
                     className="btn btn-danger btn-sm"
                     onClick={() => deleteComment(comment.id)}
@@ -258,9 +223,8 @@ export default function CommentsPage() {
             </div>
           </div>
         ))}
-
         {filteredComments.length === 0 && (
-          <div className="col-12">
+          <div>
             <div className="card">
               <div className="card-body text-center py-5">
                 <p className="text-muted">Yorum bulunamadı.</p>

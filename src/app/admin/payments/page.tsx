@@ -71,12 +71,6 @@ export default function PaymentsPage() {
 
   return (
     <AdminLayout>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
-        <button className="btn btn-secondary">
-          <FiDownload /> Rapor İndir
-        </button>
-      </div>
-
       {/* Payment Stats */}
       <div className="row mb-3">
         <div className="col-md-3">

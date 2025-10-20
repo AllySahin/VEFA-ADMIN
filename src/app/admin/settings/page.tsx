@@ -252,20 +252,8 @@ export default function SettingsPage() {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
-                      <label className="form-label">Facebook</label>
-                      <input type="url" className="form-control" placeholder="https://facebook.com/..." />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group">
                       <label className="form-label">Instagram</label>
                       <input type="url" className="form-control" placeholder="https://instagram.com/..." />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <label className="form-label">Twitter</label>
-                      <input type="url" className="form-control" placeholder="https://twitter.com/..." />
                     </div>
                   </div>
                   <div className="col-md-6">

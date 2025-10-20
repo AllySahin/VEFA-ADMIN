@@ -137,9 +137,6 @@ export default function StudentsPage() {
   return (
     <AdminLayout>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        <button className="btn btn-secondary">
-          <FiDownload /> Dışa Aktar
-        </button>
         <button className="btn btn-primary" onClick={openAddModal}>
           <FiPlus /> Yeni Öğrenci
         </button>

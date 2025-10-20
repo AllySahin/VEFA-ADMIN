@@ -48,9 +48,9 @@ export default function AdminHeader() {
   }
 
   return (
+
     <header className="admin-header">
-      <div className="header-left">
-      </div>
+      <div className="header-left"></div>
 
       <div className="header-right">
         <div className="header-actions">

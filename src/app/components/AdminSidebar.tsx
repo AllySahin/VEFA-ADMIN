@@ -75,7 +75,9 @@ export default function AdminSidebar({ collapsed, onToggle }: SidebarProps) {
     <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <div className="sidebar-logo">
-          <span className="sidebar-logo-text">VEFA</span>
+          <a href="/admin" style={{ textDecoration: 'none' }}>
+            <span style={{ color: '#FFD600', fontWeight: 500, fontSize: 26, letterSpacing: 1 }}>VEFA EĞİTİM KURUMLARI</span>
+          </a>
         </div>
         <button 
           className="sidebar-toggle-btn" 
