@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { FiSearch, FiBell, FiMail, FiChevronRight, FiLogOut } from 'react-icons/fi'
+import { FiLogOut } from 'react-icons/fi'
 
 export default function AdminHeader() {
   const pathname = usePathname()
@@ -15,55 +15,12 @@ export default function AdminHeader() {
     }
   }
 
-  const getPageTitle = () => {
-    const routes: Record<string, string> = {
-      '/admin': 'Dashboard',
-      '/admin/students': 'Öğrenci Yönetimi',
-      '/admin/courses': 'Kurs Yönetimi',
-      '/admin/slider': 'Slider Yönetimi',
-      '/admin/services': 'Hizmet Yönetimi',
-      '/admin/messages': 'Mesajlar',
-      '/admin/payments': 'Ödeme Yönetimi',
-      '/admin/reports': 'Raporlar',
-      '/admin/settings': 'Sistem Ayarları',
-      '/admin/notifications': 'Bildirimler',
-    }
-    return routes[pathname] || 'Admin Panel'
-  }
-
-  const getBreadcrumbs = () => {
-    const paths = pathname.split('/').filter(Boolean)
-    const breadcrumbs = [
-      { label: 'Ana Sayfa', href: '/admin' }
-    ]
-
-    if (paths.length > 1) {
-      breadcrumbs.push({
-        label: getPageTitle(),
-        href: pathname
-      })
-    }
-
-    return breadcrumbs
-  }
-
   return (
-
     <header className="admin-header">
       <div className="header-left"></div>
 
       <div className="header-right">
         <div className="header-actions">
-          <button className="header-btn" title="Mesajlar">
-            <FiMail size={20} />
-            <span className="notification-badge">3</span>
-          </button>
-
-          <button className="header-btn" title="Bildirimler">
-            <FiBell size={20} />
-            <span className="notification-badge">7</span>
-          </button>
-
           <div className="user-menu">
             <div className="user-avatar">AD</div>
             <div className="user-info">

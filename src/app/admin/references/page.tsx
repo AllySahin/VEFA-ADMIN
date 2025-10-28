@@ -88,7 +88,11 @@ export default function ReferencesPage() {
   return (
     <AdminLayout>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h2 className="page-title">Referans Yönetimi</h2>
+          <p className="text-muted">Kurumsal müşteri referanslarını yönetin</p>
+        </div>
         <button className="btn btn-primary" onClick={handleAdd}>
           <FiPlus /> Yeni Referans Ekle
         </button>

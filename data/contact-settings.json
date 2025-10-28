@@ -1,0 +1,27 @@
+{
+  "phone": "+90 (222) 222 22 22",
+  "email": "info@vefaismakinalari.com",
+  "address": "Örnek Mah. Sanayi Cd. No:12 Tepebaşı / Eskişehir",
+  "workingHours": "Hafta içi 09:00 - 19:00, Cumartesi 10:00 - 16:00",
+  "heroStats": [
+    {
+      "number": "24SA",
+      "label": "Yanıt Süresi"
+    },
+    {
+      "number": "ESK",
+      "label": "Merkezi Lokasyon"
+    },
+    {
+      "number": "ÜCR",
+      "label": "Ücretsiz Danışmanlık"
+    }
+  ],
+  "socialMedia": {
+    "instagram": "",
+    "linkedin": "",
+    "whatsapp": "+90 (222) 222 22 22",
+    "facebook": ""
+  },
+  "updatedAt": "2025-10-27T20:39:08.723Z"
+}

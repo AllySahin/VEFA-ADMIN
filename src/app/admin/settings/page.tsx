@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AdminLayout from '../../components/AdminLayout'
 import { FiSave, FiMail, FiGlobe, FiPhone, FiMapPin, FiImage, FiLock, FiUser, FiBell, FiUsers, FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi'
 
@@ -11,6 +11,20 @@ interface AdminUser {
   role: 'admin' | 'moderator' | 'editor'
   status: 'active' | 'inactive'
   lastLogin: string
+}
+
+interface ContactSettings {
+  phone: string
+  email: string
+  address: string
+  workingHours: string
+  heroStats: Array<{ number: string; label: string }>
+  socialMedia: {
+    instagram: string
+    linkedin: string
+    whatsapp: string
+    facebook: string
+  }
 }
 
 export default function SettingsPage() {
@@ -24,6 +38,78 @@ export default function SettingsPage() {
     role: 'editor' as 'admin' | 'moderator' | 'editor',
     status: 'active' as 'active' | 'inactive'
   })
+
+  const [contactSettings, setContactSettings] = useState<ContactSettings>({
+    phone: '+90 (222) 222 22 22',
+    email: 'info@vefaismakinalari.com',
+    address: 'Örnek Mah. Sanayi Cd. No:12 Tepebaşı / Eskişehir',
+    workingHours: 'Hafta içi 09:00 - 19:00, Cumartesi 10:00 - 16:00',
+    heroStats: [
+      { number: '24SA', label: 'Yanıt Süresi' },
+      { number: 'ESK', label: 'Merkezi Lokasyon' },
+      { number: 'ÜCR', label: 'Ücretsiz Danışmanlık' }
+    ],
+    socialMedia: {
+      instagram: '',
+      linkedin: '',
+      whatsapp: '+90 (222) 222 22 22',
+      facebook: ''
+    }
+  })
+
+  const [isSaving, setIsSaving] = useState(false)
+
+  // İletişim bilgilerini yükle
+  const loadContactSettings = async () => {
+    try {
+      const response = await fetch('/api/contact-settings')
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success) {
+          setContactSettings(result.data)
+        }
+      }
+    } catch (error) {
+      console.error('İletişim bilgileri yüklenirken hata:', error)
+    }
+  }
+
+  // İletişim bilgilerini kaydet
+  const saveContactSettings = async () => {
+    setIsSaving(true)
+    try {
+      const response = await fetch('/api/contact-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactSettings)
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success) {
+          alert('İletişim bilgileri başarıyla güncellendi!')
+        } else {
+          alert('Hata: ' + result.error)
+        }
+      } else {
+        alert('Sunucu hatası oluştu')
+      }
+    } catch (error) {
+      console.error('İletişim bilgileri kaydedilirken hata:', error)
+      alert('Bağlantı hatası oluştu')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Component mount edildiğinde iletişim bilgilerini yükle
+  useEffect(() => {
+    if (activeTab === 'contact') {
+      loadContactSettings()
+    }
+  }, [activeTab])
 
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([
     { id: 1, name: 'Admin User', email: 'admin@vefaegitim.com', role: 'admin', status: 'active', lastLogin: '2025-10-19 14:30' },
@@ -227,44 +313,218 @@ export default function SettingsPage() {
                 <h2 className="card-title">İletişim Bilgileri</h2>
               </div>
               <div className="card-body">
+                <h4 className="mb-3">Temel İletişim Bilgileri</h4>
                 <div className="form-group">
                   <label className="form-label">
                     <FiPhone /> Telefon
                   </label>
-                  <input type="tel" className="form-control" defaultValue="+90 555 123 4567" />
+                  <input 
+                    type="tel" 
+                    className="form-control" 
+                    value={contactSettings.phone}
+                    onChange={(e) => setContactSettings({...contactSettings, phone: e.target.value})}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">
                     <FiMail /> E-posta
                   </label>
-                  <input type="email" className="form-control" defaultValue="info@vefaegitim.com" />
+                  <input 
+                    type="email" 
+                    className="form-control" 
+                    value={contactSettings.email}
+                    onChange={(e) => setContactSettings({...contactSettings, email: e.target.value})}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">
                     <FiMapPin /> Adres
                   </label>
-                  <textarea className="form-control" rows={3} defaultValue="Atatürk Mah. Cumhuriyet Cad. No:123 Merkez/İstanbul" />
+                  <textarea 
+                    className="form-control" 
+                    rows={3} 
+                    value={contactSettings.address}
+                    onChange={(e) => setContactSettings({...contactSettings, address: e.target.value})}
+                  />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">WhatsApp</label>
-                  <input type="tel" className="form-control" defaultValue="+90 555 123 4567" />
+                  <label className="form-label">Çalışma Saatleri</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={contactSettings.workingHours}
+                    onChange={(e) => setContactSettings({...contactSettings, workingHours: e.target.value})}
+                  />
                 </div>
+                
+                <hr className="my-4" />
+                
+                <h4 className="mb-3">Hero Bölümü İstatistikleri</h4>
+                <p className="text-muted mb-3">İletişim sayfası hero bölümünde gösterilecek 3 istatistik bilgisi:</p>
+                
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label className="form-label">1. İstatistik - Sayı</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={contactSettings.heroStats[0]?.number || ''}
+                        onChange={(e) => {
+                          const newStats = [...contactSettings.heroStats]
+                          newStats[0] = { ...newStats[0], number: e.target.value }
+                          setContactSettings({...contactSettings, heroStats: newStats})
+                        }}
+                      />
+                      <small className="form-text text-muted">Örn: 24SA, 7/24, ÜCR</small>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">1. İstatistik - Etiket</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={contactSettings.heroStats[0]?.label || ''}
+                        onChange={(e) => {
+                          const newStats = [...contactSettings.heroStats]
+                          newStats[0] = { ...newStats[0], label: e.target.value }
+                          setContactSettings({...contactSettings, heroStats: newStats})
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label className="form-label">2. İstatistik - Sayı</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={contactSettings.heroStats[1]?.number || ''}
+                        onChange={(e) => {
+                          const newStats = [...contactSettings.heroStats]
+                          newStats[1] = { ...newStats[1], number: e.target.value }
+                          setContactSettings({...contactSettings, heroStats: newStats})
+                        }}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">2. İstatistik - Etiket</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={contactSettings.heroStats[1]?.label || ''}
+                        onChange={(e) => {
+                          const newStats = [...contactSettings.heroStats]
+                          newStats[1] = { ...newStats[1], label: e.target.value }
+                          setContactSettings({...contactSettings, heroStats: newStats})
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label className="form-label">3. İstatistik - Sayı</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={contactSettings.heroStats[2]?.number || ''}
+                        onChange={(e) => {
+                          const newStats = [...contactSettings.heroStats]
+                          newStats[2] = { ...newStats[2], number: e.target.value }
+                          setContactSettings({...contactSettings, heroStats: newStats})
+                        }}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">3. İstatistik - Etiket</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={contactSettings.heroStats[2]?.label || ''}
+                        onChange={(e) => {
+                          const newStats = [...contactSettings.heroStats]
+                          newStats[2] = { ...newStats[2], label: e.target.value }
+                          setContactSettings({...contactSettings, heroStats: newStats})
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <hr className="my-4" />
+                
+                <h4 className="mb-3">Sosyal Medya</h4>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
                       <label className="form-label">Instagram</label>
-                      <input type="url" className="form-control" placeholder="https://instagram.com/..." />
+                      <input 
+                        type="url" 
+                        className="form-control" 
+                        placeholder="https://instagram.com/..."
+                        value={contactSettings.socialMedia.instagram}
+                        onChange={(e) => setContactSettings({
+                          ...contactSettings, 
+                          socialMedia: {...contactSettings.socialMedia, instagram: e.target.value}
+                        })}
+                      />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
                       <label className="form-label">LinkedIn</label>
-                      <input type="url" className="form-control" placeholder="https://linkedin.com/..." />
+                      <input 
+                        type="url" 
+                        className="form-control" 
+                        placeholder="https://linkedin.com/..."
+                        value={contactSettings.socialMedia.linkedin}
+                        onChange={(e) => setContactSettings({
+                          ...contactSettings, 
+                          socialMedia: {...contactSettings.socialMedia, linkedin: e.target.value}
+                        })}
+                      />
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-primary">
-                  <FiSave /> Değişiklikleri Kaydet
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label className="form-label">WhatsApp</label>
+                      <input 
+                        type="tel" 
+                        className="form-control"
+                        value={contactSettings.socialMedia.whatsapp}
+                        onChange={(e) => setContactSettings({
+                          ...contactSettings, 
+                          socialMedia: {...contactSettings.socialMedia, whatsapp: e.target.value}
+                        })}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label className="form-label">Facebook</label>
+                      <input 
+                        type="url" 
+                        className="form-control" 
+                        placeholder="https://facebook.com/..."
+                        value={contactSettings.socialMedia.facebook}
+                        onChange={(e) => setContactSettings({
+                          ...contactSettings, 
+                          socialMedia: {...contactSettings.socialMedia, facebook: e.target.value}
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <button 
+                  className="btn btn-primary"
+                  onClick={saveContactSettings}
+                  disabled={isSaving}
+                >
+                  <FiSave /> {isSaving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                 </button>
               </div>
             </div>

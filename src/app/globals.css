@@ -41,6 +41,63 @@ body {
   line-height: 1.6;
 }
 
+/* === ANIMATIONS === */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* === BADGES === */
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.badge-success {
+  color: #fff;
+  background-color: var(--success-green);
+}
+
+.badge-warning {
+  color: #212529;
+  background-color: var(--warning-orange);
+}
+
+.badge-danger {
+  color: #fff;
+  background-color: var(--danger-red);
+}
+
+.badge-info {
+  color: #fff;
+  background-color: var(--info-blue);
+}
+
+.badge-secondary {
+  color: #fff;
+  background-color: #6c757d;
+}
+
+.badge-primary {
+  color: #fff;
+  background-color: var(--primary-anthracite);
+}
+
 /* === ADMIN LAYOUT === */
 .admin-layout {
   display: flex;

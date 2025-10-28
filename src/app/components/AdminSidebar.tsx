@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { 
   FiHome, FiUsers, FiBookOpen, FiImage, FiMessageSquare, 
   FiDollarSign, FiBarChart2, FiSettings, FiChevronLeft,
-  FiChevronRight, FiAward, FiMail, FiFileText, FiUserCheck
+  FiChevronRight, FiBell, FiFileText, FiAward, FiMessageCircle
 } from 'react-icons/fi'
 
 interface SidebarProps {
@@ -43,16 +43,15 @@ export default function AdminSidebar({ collapsed, onToggle }: SidebarProps) {
       items: [
         { title: 'Slider Yönetimi', href: '/admin/slider', icon: <FiImage /> },
         { title: 'Referanslar', href: '/admin/references', icon: <FiAward /> },
-        { title: 'Eğitmenler', href: '/admin/trainers', icon: <FiUserCheck /> },
-        { title: 'Yorumlar', href: '/admin/comments', icon: <FiMessageSquare />, badge: 5 },
-        { title: 'Mail Gönder', href: '/admin/send-mail', icon: <FiMail /> },
-        { title: 'Mail Şablonları', href: '/admin/mail-templates', icon: <FiFileText /> },
+        { title: 'Hizmetler', href: '/admin/services', icon: <FiFileText /> },
+        { title: 'Mesajlar', href: '/admin/messages', icon: <FiMessageSquare />, badge: 5 },
+        { title: 'Yorumlar', href: '/admin/comments', icon: <FiMessageCircle />, badge: 3 },
       ]
     },
     {
       title: 'Finans & Raporlar',
       items: [
-        { title: 'Ödemeler', href: '/admin/payments', icon: <span style={{ fontSize: '18px', fontWeight: 'bold' }}>₺</span> },
+        { title: 'Ödemeler', href: '/admin/payments', icon: <FiDollarSign /> },
         { title: 'Raporlar', href: '/admin/reports', icon: <FiBarChart2 /> },
       ]
     },
@@ -60,6 +59,7 @@ export default function AdminSidebar({ collapsed, onToggle }: SidebarProps) {
       title: 'Sistem',
       items: [
         { title: 'Ayarlar', href: '/admin/settings', icon: <FiSettings /> },
+        { title: 'Bildirimler', href: '/admin/notifications', icon: <FiBell /> },
       ]
     }
   ]
@@ -75,9 +75,7 @@ export default function AdminSidebar({ collapsed, onToggle }: SidebarProps) {
     <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <div className="sidebar-logo">
-          <a href="/admin" style={{ textDecoration: 'none' }}>
-            <span style={{ color: '#FFD600', fontWeight: 500, fontSize: 26, letterSpacing: 1 }}>VEFA EĞİTİM KURUMLARI</span>
-          </a>
+          <span className="sidebar-logo-text">VEFA</span>
         </div>
         <button 
           className="sidebar-toggle-btn" 
